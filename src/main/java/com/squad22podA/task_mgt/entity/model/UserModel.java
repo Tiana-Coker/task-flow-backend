@@ -17,7 +17,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class UserModel {
+public class UserModel extends BaseClass{
 
     private String firstName;
 
@@ -29,7 +29,7 @@ public class UserModel {
 
     private String phoneNumber;
 
-    @OneToMany(mappedBy = "user_id", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "userModel", cascade = CascadeType.ALL)
     private List<Task> taskList = new ArrayList<>();
 
 }
