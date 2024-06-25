@@ -1,10 +1,9 @@
 package com.squad22podA.task_mgt.entity.model;
 
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Entity;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
 import java.util.ArrayList;
@@ -19,15 +18,26 @@ import java.util.List;
 @Builder
 public class UserModel extends BaseClass{
 
+    @NotBlank(message = "First name is required")
     private String firstName;
 
+    @NotBlank(message = "Last name is required")
     private  String lastName;
 
+    @NotBlank(message = "Email is required")
+    @Email(message = "Invalid email format")
+    @Column(unique = true)
     private String email;
 
+    @NotBlank(message = "Password is required")
     private String password;
 
+    @Transient
+    private String confirmPassword; // this field won't be persisted in the database,  it's used transiently for validation purposes only.
+
     private String phoneNumber;
+
+    private boolean enabled = false;
 
     @OneToMany(mappedBy = "userModel", cascade = CascadeType.ALL)
     private List<Task> taskList = new ArrayList<>();
