@@ -1,6 +1,7 @@
 package com.squad22podA.task_mgt.service.impl;
 
 import com.squad22podA.task_mgt.config.JwtService;
+import com.squad22podA.task_mgt.entity.enums.Role;
 import com.squad22podA.task_mgt.entity.model.ConfirmationToken;
 import com.squad22podA.task_mgt.entity.model.UserModel;
 import com.squad22podA.task_mgt.exception.EmailAlreadyExistException;
@@ -51,7 +52,9 @@ public class UserModelServiceImpl implements UserModelService {
                                         .lastName(registrationRequest.getLastName())
                                         .email(registrationRequest.getEmail())
                                         .phoneNumber(registrationRequest.getPhoneNumber())
-                                        .password(passwordEncoder.encode(registrationRequest.getPassword())).build();
+                                        .password(passwordEncoder.encode(registrationRequest.getPassword()))
+                                        .role(Role.USER)
+                                        .build();
 
         UserModel savedUser = userModelRepository.save(newUser);
 

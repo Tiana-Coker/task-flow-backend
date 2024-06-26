@@ -42,6 +42,7 @@ public class UserModel extends BaseClass implements UserDetails {
 
     private String phoneNumber;
 
+    @Enumerated(EnumType.STRING)
     private Role role;
 
     private boolean enabled = false;

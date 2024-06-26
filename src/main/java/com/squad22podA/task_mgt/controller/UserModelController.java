@@ -1,6 +1,8 @@
 package com.squad22podA.task_mgt.controller;
 
 
+import com.squad22podA.task_mgt.payload.request.LoginRequestDto;
+import com.squad22podA.task_mgt.payload.request.LoginResponse;
 import com.squad22podA.task_mgt.payload.request.UserRegistrationRequest;
 import com.squad22podA.task_mgt.service.UserModelService;
 import jakarta.validation.Valid;
@@ -30,5 +32,11 @@ public class UserModelController {
             return ResponseEntity.badRequest().body(exception.getMessage());
         }
 
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<LoginResponse> loginUser(
+            @RequestBody LoginRequestDto loginRequestDto){
+        return ResponseEntity.ok(userModelService.loginUser(loginRequestDto));
     }
 }
