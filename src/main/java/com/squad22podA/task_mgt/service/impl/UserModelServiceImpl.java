@@ -4,6 +4,8 @@ import com.squad22podA.task_mgt.entity.model.ConfirmationToken;
 import com.squad22podA.task_mgt.entity.model.UserModel;
 import com.squad22podA.task_mgt.exception.EmailAlreadyExistException;
 import com.squad22podA.task_mgt.payload.request.EmailDetails;
+import com.squad22podA.task_mgt.payload.request.LoginRequestDto;
+import com.squad22podA.task_mgt.payload.request.LoginResponse;
 import com.squad22podA.task_mgt.payload.request.UserRegistrationRequest;
 import com.squad22podA.task_mgt.repository.ConfirmationTokenRepository;
 import com.squad22podA.task_mgt.repository.UserModelRepository;
@@ -67,4 +69,11 @@ public class UserModelServiceImpl implements UserModelService {
         emailService.sendEmailAlert(emailDetails);
 
     }
+
+    @Override
+    public LoginResponse loginUser(LoginRequestDto loginRequestDto) {
+        return null;
+    }
+
+
 }
