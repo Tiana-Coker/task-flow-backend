@@ -13,4 +13,6 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
 
     //Filter Task by userId And Status
     List<Task> findByStatusAndUserModelId(Status status, Long userId);
+
+    void deleteById(Long taskId);
 }
