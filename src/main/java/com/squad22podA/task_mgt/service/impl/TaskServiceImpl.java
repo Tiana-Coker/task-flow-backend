@@ -137,4 +137,30 @@ public class TaskServiceImpl implements TaskService {
                         .build())
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public TaskResponseDto getTask(String email, Long taskId) {
+        Optional<Task> optionalTask = taskRepository.findById(taskId);
+        if(optionalTask.isEmpty()) {
+            throw  new RuntimeException();
+        }
+        Task task = optionalTask.get();
+
+        if (!task.getUserModel().getEmail().equals(email)) {
+            throw new RuntimeException("You do not have permission to edit this task");
+        }
+
+
+        return TaskResponseDto.builder()
+                .responseCode("004")
+                .responseMessage("Get Task was a Success")
+                .taskResponseInfo(TaskResponseInfo.builder()
+                        .title(task.getTitle())
+                        .description(task.getDescription())
+                        .deadline(task.getDeadline())
+                        .priorityLevel(task.getPriorityLevel())
+                        .status(task.getStatus())
+                        .build())
+                .build();
+    }
 }
