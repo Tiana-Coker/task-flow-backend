@@ -20,4 +20,6 @@ public interface TaskService {
 
     List<TaskResponseDto> getAllTask(String email);
 
+    TaskResponseDto getTask(String email, Long taskId);
+
 }
