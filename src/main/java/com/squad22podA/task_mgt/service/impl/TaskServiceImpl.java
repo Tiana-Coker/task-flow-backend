@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 
@@ -22,6 +23,7 @@ public class TaskServiceImpl implements TaskService {
 
     private final TaskRepository taskRepository;
     public final UserModelRepository userModelRepository;
+
 
     @Autowired
     public TaskServiceImpl(TaskRepository taskRepository, UserModelRepository userModelRepository) {
@@ -101,5 +103,16 @@ public class TaskServiceImpl implements TaskService {
                         .status(updatedTask.getStatus())
                         .build())
                 .build();
+    }
+
+
+    @Override
+    public List<Task> getTasksByStatus(Status status) {
+        return taskRepository.findByStatus(status);
+    }
+
+    @Override
+    public List<Task> getTasksByStatusAndUserId(Status status, Long userId) {
+        return taskRepository.findByStatusAndUserModelId(status, userId);
     }
 }

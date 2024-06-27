@@ -67,7 +67,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(
                         requests -> requests
                                 .requestMatchers(antMatcher(HttpMethod.POST, "/api/auth/**"),
-                                        antMatcher(HttpMethod.GET, "/api/**"))
+                                        antMatcher(HttpMethod.GET, "/api/auth/confirm"))
                                 .permitAll()
                                 .anyRequest()
                                 .permitAll()
