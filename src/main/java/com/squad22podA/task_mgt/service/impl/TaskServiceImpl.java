@@ -163,4 +163,28 @@ public class TaskServiceImpl implements TaskService {
                         .build())
                 .build();
     }
+
+    @Override
+    public List<TaskResponseDto> getCompletedTask(String email) {
+        Status status = Status.COMPLETED;
+        List<Task> tasks = taskRepository.findByStatus(status);
+
+        // Filter tasks by email and map to TaskResponseDto
+        List<TaskResponseDto> taskResponseDtos = tasks.stream()
+                .filter(task -> task.getUserModel().getEmail().equals(email))
+                .map(task -> TaskResponseDto.builder()
+                        .responseCode("005")
+                        .responseMessage("Get Task by Status was a Success")
+                        .taskResponseInfo(TaskResponseInfo.builder()
+                                .title(task.getTitle())
+                                .description(task.getDescription())
+                                .deadline(task.getDeadline())
+                                .priorityLevel(task.getPriorityLevel())
+                                .status(task.getStatus())
+                                .build())
+                        .build())
+                .collect(Collectors.toList());
+
+        return taskResponseDtos;
+    }
 }

@@ -77,5 +77,12 @@ public class TaskController {
 
     }
 
+    // get by completed task
+    @GetMapping("/completed-task")
+    public ResponseEntity<List<TaskResponseDto>> getCompletedTask() {
+        String email = ((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
+        return ResponseEntity.ok(taskService.getCompletedTask(email));
+    }
+
 
 }

@@ -22,4 +22,6 @@ public interface TaskService {
 
     TaskResponseDto getTask(String email, Long taskId);
 
+    List<TaskResponseDto> getCompletedTask(String email);
+
 }
