@@ -18,4 +18,6 @@ public interface TaskService {
     //Filter Task by userId And Status
     List<Task> getTasksByStatusAndUserId(Status status, Long userId);
 
+    List<TaskResponseDto> getAllTask(String email);
+
 }
