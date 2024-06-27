@@ -187,4 +187,24 @@ public class TaskServiceImpl implements TaskService {
 
         return taskResponseDtos;
     }
+
+    @Override
+    public TaskResponseDto deleteTask(String email, Long taskId) {
+
+        try {
+            taskRepository.deleteById(taskId);
+        } catch (Exception e) {
+            return TaskResponseDto.builder()
+                    .responseCode("404")
+                    .responseMessage("Task Not found to delete")
+                    .build();
+        }
+
+
+
+        return TaskResponseDto.builder()
+                .responseCode("008")
+                .responseMessage("Task Delete successful")
+                .build();
+    }
 }

@@ -84,5 +84,17 @@ public class TaskController {
         return ResponseEntity.ok(taskService.getCompletedTask(email));
     }
 
+    // delete a task
+
+    @DeleteMapping("/delete-task/{id}")
+    public ResponseEntity<TaskResponseDto> deleteTask(@PathVariable Long id) {
+
+        String email = ((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
+
+        return ResponseEntity.ok(taskService.deleteTask(email, id));
+
+
+    }
+
 
 }
