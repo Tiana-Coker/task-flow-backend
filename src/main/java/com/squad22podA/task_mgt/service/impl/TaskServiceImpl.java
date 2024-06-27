@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -114,5 +115,26 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public List<Task> getTasksByStatusAndUserId(Status status, Long userId) {
         return taskRepository.findByStatusAndUserModelId(status, userId);
+    }
+
+    @Override
+    public List<TaskResponseDto> getAllTask(String email) {
+        List<Task> tasks = taskRepository.findAll();
+
+        // Get all task
+        return tasks.stream()
+                .filter(task -> task.getUserModel().getEmail().equals(email))
+                .map(task -> TaskResponseDto.builder()
+                        .responseCode("006")
+                        .responseMessage("Get all Task was a Success")
+                        .taskResponseInfo(TaskResponseInfo.builder()
+                                .title(task.getTitle())
+                                .description(task.getDescription())
+                                .deadline(task.getDeadline())
+                                .priorityLevel(task.getPriorityLevel())
+                                .status(task.getStatus())
+                                .build())
+                        .build())
+                .collect(Collectors.toList());
     }
 }
