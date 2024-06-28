@@ -6,7 +6,7 @@ import com.squad22podA.task_mgt.entity.enums.TokenType;
 import com.squad22podA.task_mgt.entity.model.ConfirmationToken;
 import com.squad22podA.task_mgt.entity.model.JToken;
 import com.squad22podA.task_mgt.entity.model.UserModel;
-import com.squad22podA.task_mgt.exception.EmailAlreadyExistException;
+import com.squad22podA.task_mgt.exception.EmailAlreadyExistsException;
 import com.squad22podA.task_mgt.payload.request.*;
 import com.squad22podA.task_mgt.payload.response.LoginInfo;
 import com.squad22podA.task_mgt.payload.response.LoginResponse;
@@ -50,7 +50,7 @@ public class UserModelServiceImpl implements UserModelService {
         Optional<UserModel> existingUser = userModelRepository.findByEmail(registrationRequest.getEmail());
 
         if(existingUser.isPresent()){
-            throw new EmailAlreadyExistException("Email already exists. Login to your account");
+            throw new EmailAlreadyExistsException("Email already exists. Login to your account");
         }
 
 
@@ -67,7 +67,8 @@ public class UserModelServiceImpl implements UserModelService {
         ConfirmationToken confirmationToken = new ConfirmationToken(savedUser);
         confirmationTokenRepository.save(confirmationToken);
 
-        String confirmationUrl = "http://localhost:8080/api/auth/confirm?token=" + confirmationToken.getToken();
+        //String confirmationUrl = "http://localhost:8080/api/auth/confirm?token=" + confirmationToken.getToken();
+        String confirmationUrl = "http://127.0.0.1:5500/confirmation/confirm-token-sucess.html?token=" + confirmationToken.getToken();
 
         //send email alert
         EmailDetails emailDetails = EmailDetails.builder()
