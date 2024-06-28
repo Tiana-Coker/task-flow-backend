@@ -4,7 +4,7 @@ import com.squad22podA.task_mgt.config.JwtService;
 import com.squad22podA.task_mgt.entity.enums.Role;
 import com.squad22podA.task_mgt.entity.model.ConfirmationToken;
 import com.squad22podA.task_mgt.entity.model.UserModel;
-import com.squad22podA.task_mgt.exception.EmailAlreadyExistException;
+import com.squad22podA.task_mgt.exception.EmailAlreadyExistsException;
 import com.squad22podA.task_mgt.payload.request.*;
 import com.squad22podA.task_mgt.repository.ConfirmationTokenRepository;
 import com.squad22podA.task_mgt.repository.UserModelRepository;
@@ -44,7 +44,7 @@ public class UserModelServiceImpl implements UserModelService {
         Optional<UserModel> existingUser = userModelRepository.findByEmail(registrationRequest.getEmail());
 
         if(existingUser.isPresent()){
-            throw new EmailAlreadyExistException("Email already exists. Login to your account");
+            throw new EmailAlreadyExistsException("Email already exists. Login to your account");
         }
 
 
