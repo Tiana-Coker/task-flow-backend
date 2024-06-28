@@ -2,7 +2,7 @@ package com.squad22podA.task_mgt.controller;
 
 
 import com.squad22podA.task_mgt.payload.request.LoginRequestDto;
-import com.squad22podA.task_mgt.payload.request.LoginResponse;
+import com.squad22podA.task_mgt.payload.response.LoginResponse;
 import com.squad22podA.task_mgt.payload.request.UserRegistrationRequest;
 import com.squad22podA.task_mgt.service.UserModelService;
 import jakarta.validation.Valid;

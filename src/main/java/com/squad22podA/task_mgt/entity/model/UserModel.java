@@ -52,6 +52,9 @@ public class UserModel extends BaseClass implements UserDetails {
     @JsonManagedReference
     private List<Task> taskList = new ArrayList<>();
 
+    @OneToMany(mappedBy = "userModel")
+    private List<JToken> jtokens;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority(role.name()));
