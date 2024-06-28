@@ -61,7 +61,8 @@ public class UserModelServiceImpl implements UserModelService {
         ConfirmationToken confirmationToken = new ConfirmationToken(savedUser);
         confirmationTokenRepository.save(confirmationToken);
 
-        String confirmationUrl = "http://localhost:8080/api/auth/confirm?token=" + confirmationToken.getToken();
+        //String confirmationUrl = "http://localhost:8080/api/auth/confirm?token=" + confirmationToken.getToken();
+        String confirmationUrl = "http://127.0.0.1:5500/confirmation/confirm-token-sucess.html?token=" + confirmationToken.getToken();
 
         //send email alert
         EmailDetails emailDetails = EmailDetails.builder()
