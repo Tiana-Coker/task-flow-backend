@@ -56,25 +56,11 @@ public class UserModelServiceImpl implements UserModelService {
             return "Invalid Email";
         }
 
-//        if (!matcher.matches()) {
-//            return RegisterResponse.builder()
-//                    .responseCode(UserUtils.INVALID_EMAIL_FORMAT_CODE)
-//                    .responseMessage(UserUtils.INVALID_EMAIL_FORMAT_MESSAGE)
-//                    .build();
-//        }
-
-// Validate email domain
         String[] emailParts = registrationRequest.getEmail().split("\\.");
         if (emailParts.length < 2 || emailParts[emailParts.length - 1].length() < 2) {
             System.out.println("Invalid email domain. Email parts: " + Arrays.toString(emailParts));
             return "Invalid Email domain";
-
-//            return RegisterResponse.builder()
-//                    .responseCode(UserUtils.INVALID_EMAIL_DOMAIN_CODE)
-//                    .responseMessage(UserUtils.INVALID_EMAIL_DOMAIN_MESSAGE)
-//                    .build();
         }
-
 
         if(!registrationRequest.getPassword().equals(registrationRequest.getConfirmPassword())){
             throw new IllegalArgumentException("Passwords do not match!");
