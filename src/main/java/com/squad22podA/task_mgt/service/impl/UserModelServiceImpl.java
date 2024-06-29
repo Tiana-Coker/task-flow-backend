@@ -2,11 +2,16 @@ package com.squad22podA.task_mgt.service.impl;
 
 import com.squad22podA.task_mgt.config.JwtService;
 import com.squad22podA.task_mgt.entity.enums.Role;
+import com.squad22podA.task_mgt.entity.enums.TokenType;
 import com.squad22podA.task_mgt.entity.model.ConfirmationToken;
+import com.squad22podA.task_mgt.entity.model.JToken;
 import com.squad22podA.task_mgt.entity.model.UserModel;
 import com.squad22podA.task_mgt.exception.EmailAlreadyExistsException;
 import com.squad22podA.task_mgt.payload.request.*;
+import com.squad22podA.task_mgt.payload.response.LoginInfo;
+import com.squad22podA.task_mgt.payload.response.LoginResponse;
 import com.squad22podA.task_mgt.repository.ConfirmationTokenRepository;
+import com.squad22podA.task_mgt.repository.JTokenRepository;
 import com.squad22podA.task_mgt.repository.UserModelRepository;
 import com.squad22podA.task_mgt.service.EmailService;
 import com.squad22podA.task_mgt.service.UserModelService;
@@ -28,6 +33,7 @@ public class UserModelServiceImpl implements UserModelService {
 
 
     private final UserModelRepository userModelRepository;
+    private final JTokenRepository jTokenRepository;
     private final PasswordEncoder passwordEncoder;
     private final ConfirmationTokenRepository confirmationTokenRepository;
     private final EmailService emailService;
@@ -124,6 +130,8 @@ public class UserModelServiceImpl implements UserModelService {
                 .orElseThrow();
 
         var jwtToken = jwtService.generateToken(user);
+        revokeAllUserTokens(user);
+        saveUserToken(user, jwtToken);
 
         return LoginResponse.builder()
                 .responseCode("002")
@@ -134,6 +142,29 @@ public class UserModelServiceImpl implements UserModelService {
                         .build())
                 .build();
     }
+
+    private void saveUserToken(UserModel userModel, String jwtToken) {
+        var token = JToken.builder()
+                .userModel(userModel)
+                .token(jwtToken)
+                .tokenType(TokenType.BEARER)
+                .expired(false)
+                .revoked(false)
+                .build();
+        jTokenRepository.save(token);
+    }
+
+    private void revokeAllUserTokens(UserModel userModel) {
+        var validUserTokens = jTokenRepository.findAllValidTokenByUser(userModel.getId());
+        if (validUserTokens.isEmpty())
+            return;
+        validUserTokens.forEach(token -> {
+            token.setExpired(true);
+            token.setRevoked(true);
+        });
+        jTokenRepository.saveAll(validUserTokens);
+    }
+
 
 
 }
