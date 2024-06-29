@@ -6,7 +6,7 @@ import com.squad22podA.task_mgt.payload.request.UserRegistrationRequest;
 
 public interface UserModelService {
 
-    void registerUser(UserRegistrationRequest registrationRequest);
+    String registerUser(UserRegistrationRequest registrationRequest);
 
     LoginResponse loginUser(LoginRequestDto loginRequestDto);
 

@@ -16,7 +16,10 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 @Service
@@ -35,7 +38,37 @@ public class UserModelServiceImpl implements UserModelService {
 
 
     @Override
-    public void registerUser(UserRegistrationRequest registrationRequest) {
+    public String registerUser(UserRegistrationRequest registrationRequest) {
+
+
+        // Validate email format
+        String emailRegex = "^(.+)@(.+)$";
+        Pattern pattern = Pattern.compile(emailRegex);
+        Matcher matcher = pattern.matcher(registrationRequest.getEmail());
+
+        if(!matcher.matches()){
+            return "Invalid Email";
+        }
+
+//        if (!matcher.matches()) {
+//            return RegisterResponse.builder()
+//                    .responseCode(UserUtils.INVALID_EMAIL_FORMAT_CODE)
+//                    .responseMessage(UserUtils.INVALID_EMAIL_FORMAT_MESSAGE)
+//                    .build();
+//        }
+
+// Validate email domain
+        String[] emailParts = registrationRequest.getEmail().split("\\.");
+        if (emailParts.length < 2 || emailParts[emailParts.length - 1].length() < 2) {
+            System.out.println("Invalid email domain. Email parts: " + Arrays.toString(emailParts));
+            return "Invalid Email domain";
+
+//            return RegisterResponse.builder()
+//                    .responseCode(UserUtils.INVALID_EMAIL_DOMAIN_CODE)
+//                    .responseMessage(UserUtils.INVALID_EMAIL_DOMAIN_MESSAGE)
+//                    .build();
+        }
+
 
         if(!registrationRequest.getPassword().equals(registrationRequest.getConfirmPassword())){
             throw new IllegalArgumentException("Passwords do not match!");
@@ -75,6 +108,7 @@ public class UserModelServiceImpl implements UserModelService {
                                     .build();
 
         emailService.sendEmailAlert(emailDetails);
+        return "Confirmed Email!!!";
 
     }
 
