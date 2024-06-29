@@ -26,8 +26,13 @@ public class UserModelController {
     public ResponseEntity<?> registerUser(@Valid @RequestBody UserRegistrationRequest registrationRequest) {
 
         try{
-            userModelService.registerUser(registrationRequest);
-            return ResponseEntity.ok("User registered successfully. Please check your email to confirm your account");
+            String registerUser  = userModelService.registerUser(registrationRequest);
+            if(!registerUser.equals("Invalid Email domain")){
+                return ResponseEntity.ok("User registered successfully. Please check your email to confirm your account");
+            }else {
+                return ResponseEntity.badRequest().body("Invalid Email!!!");
+            }
+
         } catch (IllegalArgumentException exception){
             return ResponseEntity.badRequest().body(exception.getMessage());
         }
