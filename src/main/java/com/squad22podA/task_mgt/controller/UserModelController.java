@@ -5,6 +5,7 @@ import com.squad22podA.task_mgt.payload.request.LoginRequestDto;
 import com.squad22podA.task_mgt.payload.response.LoginResponse;
 import com.squad22podA.task_mgt.payload.request.UserRegistrationRequest;
 import com.squad22podA.task_mgt.service.UserModelService;
+import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -35,6 +36,8 @@ public class UserModelController {
 
         } catch (IllegalArgumentException exception){
             return ResponseEntity.badRequest().body(exception.getMessage());
+        } catch (MessagingException e) {
+            throw new RuntimeException(e);
         }
 
     }

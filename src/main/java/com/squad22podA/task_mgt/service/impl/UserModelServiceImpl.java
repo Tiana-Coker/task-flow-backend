@@ -15,7 +15,10 @@ import com.squad22podA.task_mgt.repository.JTokenRepository;
 import com.squad22podA.task_mgt.repository.UserModelRepository;
 import com.squad22podA.task_mgt.service.EmailService;
 import com.squad22podA.task_mgt.service.UserModelService;
+import com.squad22podA.task_mgt.utils.EmailTemplate;
+import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -41,10 +44,12 @@ public class UserModelServiceImpl implements UserModelService {
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
 
+    @Value("${baseUrl}")
+    private String baseUrl;
 
 
     @Override
-    public String registerUser(UserRegistrationRequest registrationRequest) {
+    public String registerUser(UserRegistrationRequest registrationRequest) throws MessagingException {
 
 
         // Validate email format
@@ -53,7 +58,7 @@ public class UserModelServiceImpl implements UserModelService {
         Matcher matcher = pattern.matcher(registrationRequest.getEmail());
 
         if(!matcher.matches()){
-            return "Invalid Email";
+            return "Invalid Email domain";
         }
 
         String[] emailParts = registrationRequest.getEmail().split("\\.");
@@ -86,21 +91,15 @@ public class UserModelServiceImpl implements UserModelService {
         ConfirmationToken confirmationToken = new ConfirmationToken(savedUser);
         confirmationTokenRepository.save(confirmationToken);
 
-        //String confirmationUrl = "http://localhost:8080/api/auth/confirm?token=" + confirmationToken.getToken();
-        String confirmationUrl = "http://127.0.0.1:5500/confirmation/confirm-token-sucess.html?token=" + confirmationToken.getToken();
+        String confirmationUrl = EmailTemplate.getVerificationUrl(baseUrl, confirmationToken.getToken());
 
         //send email alert
         EmailDetails emailDetails = EmailDetails.builder()
-                                    .recipient(savedUser.getEmail())
-                                    .subject("ACCOUNT CREATION")
-                                    .messageBody("CONGRATULATIONS!!! Your User Account Has Been Successfully Created.\n"
-                                    + "Your Account Details: \n" + "Account FullName: " + savedUser.getFirstName() + " \n"
-                                     + "Confirm your email " +
-                                            "Please click the link to confirm your registration: " + confirmationUrl)
-                                    .build();
-
-        emailService.sendEmailAlert(emailDetails);
-        return "Confirmed Email!!!";
+                .recipient(savedUser.getEmail())
+                .subject("ACCOUNT CREATION SUCCESSFUL")
+                .build();
+        emailService.sendSimpleMailMessage(emailDetails, savedUser.getFirstName(), savedUser.getLastName(), confirmationUrl);
+        return "Confirmed Email";
 
     }
 
