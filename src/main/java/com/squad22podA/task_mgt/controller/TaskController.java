@@ -45,10 +45,10 @@ public class TaskController {
 
 
     // view all task by status
-    @GetMapping("/status/{status}")
-    public List<Task> getTasksByStatus(@PathVariable Status status) {
-        return taskService.getTasksByStatus(status);
-    }
+//    @GetMapping("/status/{status}")
+//    public List<Task> getTasksByStatus(@PathVariable Status status) {
+//        return taskService.getTasksByStatus(status);
+//    }
 
     //task status of a given user
     @GetMapping("/status/{status}/user/{userId}")
@@ -66,6 +66,22 @@ public class TaskController {
     public ResponseEntity<List<TaskResponseDto>> getAllTask() {
         String email = ((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
         return ResponseEntity.ok(taskService.getAllTask(email));
+    }
+
+    @GetMapping("/status/{status}")
+    public ResponseEntity<List<TaskResponseDto>> getTasksByStatusAndCurrentUser(@PathVariable Status status) {
+        // Retrieve authenticated user's email
+        String email = ((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
+
+        // Retrieve tasks by status and user identifier (email)
+//        List<Task> tasks = taskService.getTasksByStatusAndUserEmail(status, email);
+
+//        if (tasks.isEmpty()) {
+//            String message = String.format("No %s tasks available now for user '%s'. Check later.", status.name().toLowerCase(), email);
+//            return ResponseEntity.ok(message);
+//        }
+
+        return ResponseEntity.ok(taskService.getTasksByStatusAndUserEmail(status, email));
     }
 
     // get task by task-id
@@ -95,6 +111,7 @@ public class TaskController {
 
 
     }
+
 
 
 }
