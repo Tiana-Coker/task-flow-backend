@@ -170,7 +170,7 @@ public class TaskServiceImpl implements TaskService {
     public TaskResponseDto getTask(String email, Long taskId) {
         Optional<Task> optionalTask = taskRepository.findById(taskId);
         if(optionalTask.isEmpty()) {
-            throw  new RuntimeException();
+            throw  new RuntimeException("Task not found");
         }
         Task task = optionalTask.get();
 
