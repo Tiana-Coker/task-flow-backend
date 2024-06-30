@@ -98,7 +98,11 @@ public class TaskController {
     public ResponseEntity<TaskResponseDto> getTask(@PathVariable Long id) {
 
         String email = ((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
-        return ResponseEntity.ok(taskService.getTask(email, id));
+        try {
+            return ResponseEntity.ok(taskService.getTask(email, id));
+        } catch (Exception e) {
+            throw new TaskNotFoundOrWrongUserException("Something went Wrong: " + e.getMessage());
+        }
 
     }
 
