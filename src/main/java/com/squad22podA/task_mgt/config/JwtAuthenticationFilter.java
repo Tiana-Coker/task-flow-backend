@@ -1,5 +1,7 @@
 package com.squad22podA.task_mgt.config;
 
+import com.squad22podA.task_mgt.exception.ExpiredJwtTokenException;
+import com.squad22podA.task_mgt.repository.JTokenRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -9,6 +11,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -24,6 +27,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final UserDetailsService userDetailsService;
 
+    private final JTokenRepository jTokenRepository;
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
@@ -31,41 +36,45 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         final String jwt;
         final String userEmail;
 
-
-
         if(authHeader == null || !authHeader.startsWith("Bearer ")){
             filterChain.doFilter(request, response);
             return;
         }
 
-        // extract token from authHeader
-
-        jwt = authHeader.substring(7);
-
-        // extract the email from the jwt service
-
+        try{
+            // extract token from authHeader
+            jwt = authHeader.substring(7);
+            // extract the email from the jwt service
             userEmail = jwtService.extractUsername(jwt);
 
+            if(userEmail != null &&
+                    SecurityContextHolder.getContext().getAuthentication() == null){
 
-        if(userEmail != null &&
-                SecurityContextHolder.getContext().getAuthentication() == null){
+                UserDetails userDetails =
+                        this.userDetailsService.loadUserByUsername(userEmail);
+                var isTokenValid = jTokenRepository.findByToken(jwt)
+                        .map(t -> !t.isExpired() && !t.isRevoked())
+                        .orElse(false);
 
-            UserDetails userDetails =
-                    this.userDetailsService.loadUserByUsername(userEmail);
+                if(jwtService.isTokenValid(jwt, userDetails) && isTokenValid){
+                    UsernamePasswordAuthenticationToken authenticationToken =
+                            new UsernamePasswordAuthenticationToken(
+                                    userDetails,
+                                    null,
+                                    userDetails.getAuthorities()
+                            );
+                    authenticationToken.setDetails(
+                            new WebAuthenticationDetailsSource().buildDetails(request));
+                    SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+                }
 
-            if(jwtService.isTokenValid(jwt, userDetails)){
-                UsernamePasswordAuthenticationToken authenticationToken =
-                        new UsernamePasswordAuthenticationToken(
-                                userDetails,
-                                null,
-                                userDetails.getAuthorities()
-                        );
-                authenticationToken.setDetails(
-                        new WebAuthenticationDetailsSource().buildDetails(request));
-                SecurityContextHolder.getContext().setAuthentication(authenticationToken);
             }
-
+            filterChain.doFilter(request, response);
+        } catch (ExpiredJwtTokenException e){
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "JWT token expired");
         }
-        filterChain.doFilter(request, response);
+       catch (IOException | ServletException e) {
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "JWT token is not valid");
+        }
     }
 }

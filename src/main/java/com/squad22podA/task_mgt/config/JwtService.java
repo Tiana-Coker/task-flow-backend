@@ -60,7 +60,7 @@ public class JwtService {
                 .setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() +
-                        1000 * 60 * 24
+                        1000 * 60 * 60 * 24
                 ))
                 .signWith(getSignInKey(), SignatureAlgorithm.HS256)
                 .compact();
@@ -70,7 +70,7 @@ public class JwtService {
         return (generateToken(new HashMap<>(), userDetails));
     }
 
-    // Check if token is valid
+    // Check if the token is valid
 
     public Boolean isTokenValid(String token, UserDetails userDetails){
         final String userName = extractUsername(token);

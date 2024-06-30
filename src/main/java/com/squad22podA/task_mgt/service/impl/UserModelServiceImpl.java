@@ -2,21 +2,35 @@ package com.squad22podA.task_mgt.service.impl;
 
 import com.squad22podA.task_mgt.config.JwtService;
 import com.squad22podA.task_mgt.entity.enums.Role;
+import com.squad22podA.task_mgt.entity.enums.TokenType;
 import com.squad22podA.task_mgt.entity.model.ConfirmationToken;
+import com.squad22podA.task_mgt.entity.model.JToken;
 import com.squad22podA.task_mgt.entity.model.UserModel;
-import com.squad22podA.task_mgt.exception.EmailAlreadyExistException;
+import com.squad22podA.task_mgt.exception.EmailAlreadyExistsException;
+import com.squad22podA.task_mgt.exception.UserNotFoundException;
 import com.squad22podA.task_mgt.payload.request.*;
+import com.squad22podA.task_mgt.payload.response.LoginInfo;
+import com.squad22podA.task_mgt.payload.response.LoginResponse;
+import com.squad22podA.task_mgt.payload.response.UserProfileResponseDto;
+import com.squad22podA.task_mgt.payload.response.UserProfileResponseInfo;
 import com.squad22podA.task_mgt.repository.ConfirmationTokenRepository;
+import com.squad22podA.task_mgt.repository.JTokenRepository;
 import com.squad22podA.task_mgt.repository.UserModelRepository;
 import com.squad22podA.task_mgt.service.EmailService;
 import com.squad22podA.task_mgt.service.UserModelService;
+import com.squad22podA.task_mgt.utils.EmailTemplate;
+import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 @Service
@@ -25,6 +39,7 @@ public class UserModelServiceImpl implements UserModelService {
 
 
     private final UserModelRepository userModelRepository;
+    private final JTokenRepository jTokenRepository;
     private final PasswordEncoder passwordEncoder;
     private final ConfirmationTokenRepository confirmationTokenRepository;
     private final EmailService emailService;
@@ -32,10 +47,28 @@ public class UserModelServiceImpl implements UserModelService {
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
 
+    @Value("${baseUrl}")
+    private String baseUrl;
 
 
     @Override
-    public void registerUser(UserRegistrationRequest registrationRequest) {
+    public String registerUser(UserRegistrationRequest registrationRequest) throws MessagingException {
+
+
+        // Validate email format
+        String emailRegex = "^(.+)@(.+)$";
+        Pattern pattern = Pattern.compile(emailRegex);
+        Matcher matcher = pattern.matcher(registrationRequest.getEmail());
+
+        if(!matcher.matches()){
+            return "Invalid Email domain";
+        }
+
+        String[] emailParts = registrationRequest.getEmail().split("\\.");
+        if (emailParts.length < 2 || emailParts[emailParts.length - 1].length() < 2) {
+            System.out.println("Invalid email domain. Email parts: " + Arrays.toString(emailParts));
+            return "Invalid Email domain";
+        }
 
         if(!registrationRequest.getPassword().equals(registrationRequest.getConfirmPassword())){
             throw new IllegalArgumentException("Passwords do not match!");
@@ -44,7 +77,7 @@ public class UserModelServiceImpl implements UserModelService {
         Optional<UserModel> existingUser = userModelRepository.findByEmail(registrationRequest.getEmail());
 
         if(existingUser.isPresent()){
-            throw new EmailAlreadyExistException("Email already exists. Login to your account");
+            throw new EmailAlreadyExistsException("Email already exists. Login to your account");
         }
 
 
@@ -61,19 +94,15 @@ public class UserModelServiceImpl implements UserModelService {
         ConfirmationToken confirmationToken = new ConfirmationToken(savedUser);
         confirmationTokenRepository.save(confirmationToken);
 
-        String confirmationUrl = "http://localhost:8080/api/auth/confirm?token=" + confirmationToken.getToken();
+        String confirmationUrl = EmailTemplate.getVerificationUrl(baseUrl, confirmationToken.getToken());
 
         //send email alert
         EmailDetails emailDetails = EmailDetails.builder()
-                                    .recipient(savedUser.getEmail())
-                                    .subject("ACCOUNT CREATION")
-                                    .messageBody("CONGRATULATIONS!!! Your User Account Has Been Successfully Created.\n"
-                                    + "Your Account Details: \n" + "Account FullName: " + savedUser.getFirstName() + " \n"
-                                     + "Confirm your email " +
-                                            "Please click the link to confirm your registration: " + confirmationUrl)
-                                    .build();
-
-        emailService.sendEmailAlert(emailDetails);
+                .recipient(savedUser.getEmail())
+                .subject("ACCOUNT CREATION SUCCESSFUL")
+                .build();
+        emailService.sendSimpleMailMessage(emailDetails, savedUser.getFirstName(), savedUser.getLastName(), confirmationUrl);
+        return "Confirmed Email";
 
     }
 
@@ -86,9 +115,11 @@ public class UserModelServiceImpl implements UserModelService {
                 )
         );
         UserModel user = userModelRepository.findByEmail(loginRequestDto.getEmail())
-                .orElseThrow();
+                .orElseThrow(() -> new UserNotFoundException("User not found with email: " + loginRequestDto.getEmail()));
 
         var jwtToken = jwtService.generateToken(user);
+        revokeAllUserTokens(user);
+        saveUserToken(user, jwtToken);
 
         return LoginResponse.builder()
                 .responseCode("002")
@@ -99,6 +130,47 @@ public class UserModelServiceImpl implements UserModelService {
                         .build())
                 .build();
     }
+
+    @Override
+    public UserProfileResponseDto fetchUserProfile(String email) {
+        UserModel user = userModelRepository.findByEmail(email)
+                .orElseThrow(() -> new UserNotFoundException("User not found with email: " + email));
+
+        return UserProfileResponseDto.builder()
+                .responseCode("success")
+                .responseMessage("Profile fetched Successfully")
+                .userProfileResponseInfo(UserProfileResponseInfo.builder()
+                        .firstName(user.getFirstName())
+                        .lastName(user.getLastName())
+                        .email(user.getEmail())
+                        .phoneNumber(user.getPhoneNumber())
+                        .build()
+                ).build();
+
+    }
+
+    private void saveUserToken(UserModel userModel, String jwtToken) {
+        var token = JToken.builder()
+                .userModel(userModel)
+                .token(jwtToken)
+                .tokenType(TokenType.BEARER)
+                .expired(false)
+                .revoked(false)
+                .build();
+        jTokenRepository.save(token);
+    }
+
+    private void revokeAllUserTokens(UserModel userModel) {
+        var validUserTokens = jTokenRepository.findAllValidTokenByUser(userModel.getId());
+        if (validUserTokens.isEmpty())
+            return;
+        validUserTokens.forEach(token -> {
+            token.setExpired(true);
+            token.setRevoked(true);
+        });
+        jTokenRepository.saveAll(validUserTokens);
+    }
+
 
 
 }
