@@ -7,6 +7,7 @@ import com.squad22podA.task_mgt.entity.model.ConfirmationToken;
 import com.squad22podA.task_mgt.entity.model.JToken;
 import com.squad22podA.task_mgt.entity.model.UserModel;
 import com.squad22podA.task_mgt.exception.EmailAlreadyExistsException;
+import com.squad22podA.task_mgt.exception.UserNotEnabledException;
 import com.squad22podA.task_mgt.exception.UserNotFoundException;
 import com.squad22podA.task_mgt.payload.request.*;
 import com.squad22podA.task_mgt.payload.response.LoginInfo;
@@ -116,6 +117,10 @@ public class UserModelServiceImpl implements UserModelService {
         );
         UserModel user = userModelRepository.findByEmail(loginRequestDto.getEmail())
                 .orElseThrow(() -> new UserNotFoundException("User not found with email: " + loginRequestDto.getEmail()));
+
+        if (!user.isEnabled()) {
+            throw new UserNotEnabledException("User account is not enabled. Please check your email to confirm your account.");
+        }
 
         var jwtToken = jwtService.generateToken(user);
         revokeAllUserTokens(user);
