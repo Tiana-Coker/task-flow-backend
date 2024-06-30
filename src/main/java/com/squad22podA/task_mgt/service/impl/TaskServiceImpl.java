@@ -38,8 +38,9 @@ public class TaskServiceImpl implements TaskService {
     public TaskResponseDto createTask(String email, TaskRequest taskRequest) {
         Optional<UserModel> optionalUser = userModelRepository.findByEmail(email);
         if(optionalUser.isEmpty()) {
-            throw  new RuntimeException();
+            throw  new RuntimeException("User not found");
         }
+
 
         // get the actual user
         UserModel user = optionalUser.get();
@@ -76,13 +77,14 @@ public class TaskServiceImpl implements TaskService {
     public TaskResponseDto editTask(String email, Long taskId, TaskRequest taskRequest) {
         Optional<Task> optionalTask = taskRepository.findById(taskId);
         if(optionalTask.isEmpty()) {
-            throw  new RuntimeException();
+            throw  new RuntimeException("Task not found");
         }
         Task task = optionalTask.get();
 
         if (!task.getUserModel().getEmail().equals(email)) {
             throw new RuntimeException("You do not have permission to edit this task");
         }
+
 
         task.setTitle(taskRequest.getTitle());
         task.setDescription(taskRequest.getDescription());

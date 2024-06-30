@@ -3,6 +3,7 @@ package com.squad22podA.task_mgt.controller;
 
 import com.squad22podA.task_mgt.entity.enums.Status;
 import com.squad22podA.task_mgt.entity.model.Task;
+import com.squad22podA.task_mgt.exception.TaskNotFoundOrWrongUserException;
 import com.squad22podA.task_mgt.payload.request.TaskRequest;
 import com.squad22podA.task_mgt.payload.response.TaskResponseDto;
 import com.squad22podA.task_mgt.service.TaskService;
@@ -29,7 +30,11 @@ public class TaskController {
     @PostMapping("/new-task")
     public ResponseEntity<TaskResponseDto> createTask(@Valid @RequestBody TaskRequest taskRequest) {
         String email = ((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
-        return ResponseEntity.ok(taskService.createTask(email, taskRequest));
+        try {
+            return ResponseEntity.ok(taskService.createTask(email, taskRequest));
+        } catch (Exception e) {
+            throw new TaskNotFoundOrWrongUserException("Something went Wrong: " + e.getMessage());
+        }
 
     }
 
@@ -39,7 +44,11 @@ public class TaskController {
 
         String email = ((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
 
-        return ResponseEntity.ok(taskService.editTask(email, id, taskRequest));
+        try {
+            return ResponseEntity.ok(taskService.editTask(email, id, taskRequest));
+        } catch (Exception e) {
+            throw new TaskNotFoundOrWrongUserException("Something went Wrong: " + e.getMessage());
+        }
 
     }
 
