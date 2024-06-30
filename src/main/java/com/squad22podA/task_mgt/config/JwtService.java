@@ -24,13 +24,15 @@ public class JwtService {
     // Extract all claims
     private Claims extractAllClaims(String token){
 
-        return Jwts
-                .parser()
-                .setSigningKey(getSignInKey())
-                .build()
-                .parseClaimsJws(token)
-                .getPayload();
-    }
+                return Jwts
+                        .parser()
+                        .setSigningKey(getSignInKey())
+                        .build()
+                        .parseClaimsJws(token)
+                        .getBody();
+
+        }
+
 
     private Key getSignInKey() {
         byte[] keyBytes = Decoders.BASE64.decode(SECRET_KEY);

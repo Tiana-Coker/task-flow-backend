@@ -70,7 +70,7 @@ public class SecurityConfig {
                                         antMatcher(HttpMethod.GET, "/api/**"))
                                 .permitAll()
                                 .anyRequest()
-                                .permitAll()
+                                .authenticated()
 
                 )
                 .exceptionHandling(exception -> exception
