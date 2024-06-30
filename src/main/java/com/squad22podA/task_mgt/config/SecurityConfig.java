@@ -43,7 +43,7 @@ public class SecurityConfig {
                                         antMatcher(HttpMethod.GET, "/api/auth/confirm"))
                                 .permitAll()
                                 .anyRequest()
-                                .permitAll()
+                                .authenticated()
 
                 )
                 .exceptionHandling(exception -> exception
