@@ -28,7 +28,7 @@ public class TaskController {
     }
 
     @PostMapping("/new-task")
-    public ResponseEntity<TaskResponseDto> createTask(@Valid @RequestBody TaskRequest taskRequest) {
+    public ResponseEntity<?> createTask(@Valid @RequestBody TaskRequest taskRequest) {
         String email = ((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
         try {
             return ResponseEntity.ok(taskService.createTask(email, taskRequest));
@@ -40,7 +40,7 @@ public class TaskController {
 
     // edit the task
     @PutMapping("/edit-task/{id}")
-    public ResponseEntity<TaskResponseDto> editTask(@Valid @RequestBody TaskRequest taskRequest, @PathVariable Long id) {
+    public ResponseEntity<?> editTask(@Valid @RequestBody TaskRequest taskRequest, @PathVariable Long id) {
 
         String email = ((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
 
