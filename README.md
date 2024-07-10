@@ -73,11 +73,10 @@ As a user, I want to be able to sign up for an account so that I can access the 
         cd week10-frontend 
    ```
 
-2. Open the project in Visual Studio Code (VS Code).
-    a. VS Code (recommended for Live Server):
-    b. Download and install Visual Studio Code from here.
-    c. Install the Live Server extension in VS Code.
-3. After cloning, open the index.html file in VS Code and run it with Live Server to view the Landing page.
+2. Open the project in Visual Studio Code (VS Code). - VS Code (recommended for Live Server):
+3. Download and install Visual Studio Code from here. 
+4. Install the Live Server extension in VS Code. 
+5. After cloning, open the index.html file in VS Code and run it with Live Server to view the Landing page.
 
 This setup will allow you to test the TaskFlow backend API endpoints either using Postman or by setting up a simple frontend with Live Server. Ensure the backend server is running and accessible at http://localhost:8080 before proceeding with these options.
 
@@ -85,7 +84,7 @@ This setup will allow you to test the TaskFlow backend API endpoints either usin
 ### Backend
 1. Clone the repository:
     ```bash
-    git clone https://github.com/yourusername/backend-repo.git
+    git clone https://github.com/Neche-Stephen/task-flow-backend
     cd backend-repo
     ```
 
