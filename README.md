@@ -6,7 +6,7 @@ TaskFlow is a task management application designed to help individuals efficient
 ## Table of Contents
 1. [Overview](#overview)
 2. [Features](#features)
-3. [Technologies Used](#tech-stack)
+3. [Technologies Used](#Technologies Used)
 4. [Project Setup and Installation](#Project-Setup)
 5. [Usage](#usage)
 6. [Contributing](#contributing)
@@ -38,7 +38,7 @@ As a user, I want to be able to sign up for an account so that I can access the 
         7. View a list of completed tasks separately.
         8. Log out of my account.
 
-## Technologies Used
+## Technologies Used 
 
 - **Frontend:**
     - HTML
