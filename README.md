@@ -6,13 +6,10 @@ TaskFlow is a task management application designed to help individuals efficient
 ## Table of Contents
 1. [Overview](#overview)
 2. [Features](#features)
-2. [Technologies Used](#tech-stack)
-3. [Project Structure](#project-structure)
-4. [Project Setup](#Project Setup)
+3. [Technologies Used](#tech-stack)
+4. [Project Setup and Installation](#Project-Setup)
 5. [Usage](#usage)
-6. [API Documentation](#api-documentation)
-7. [Contributing](#contributing)
-8.
+6. [Contributing](#contributing)
 
 ## Overview
 
@@ -56,14 +53,14 @@ As a user, I want to be able to sign up for an account so that I can access the 
     - Postman
     - GIT
 
-## Project Setup and Installation
+## Project-Setup
 
 ### Prerequisites
 
 ### Frontend
 
 **You can use Postman (for testing the API endpoints):**
-1. Download and install Postman from here.
+1. Download and install Postman from [here](https://www.postman.com/downloads/).
 2. Use Postman to send requests to the API endpoints in the Controllers and verify their responses.
 
 **Or Clone the Frontend Repo (for a simple frontend setup):**
@@ -74,7 +71,7 @@ As a user, I want to be able to sign up for an account so that I can access the 
    ```
 
 2. Open the project in Visual Studio Code (VS Code). - VS Code (recommended for Live Server):
-3. Download and install Visual Studio Code from here. 
+3. Download and install Visual Studio Code from [here](https://code.visualstudio.com/download). 
 4. Install the Live Server extension in VS Code. 
 5. After cloning, open the index.html file in VS Code and run it with Live Server to view the Landing page.
 
@@ -82,16 +79,26 @@ This setup will allow you to test the TaskFlow backend API endpoints either usin
 
 
 ### Backend
-1. Clone the repository:
+1. Install Java JDK:
+
+Download and install the Java JDK from [here](https://www.oracle.com/ng/java/technologies/downloads/).
+Ensure you have JDK 17 installed by running java -version in your terminal/command prompt.
+
+2. Install an IDE (IntelliJ IDEA or any other):
+
+Download and install IntelliJ IDEA from [here](https://www.jetbrains.com/idea/download).
+Alternatively, you can use any other IDE you are comfortable with.
+
+3. Clone the repository:
     ```bash
-    git clone https://github.com/Neche-Stephen/task-flow-backend
-    cd backend-repo
+    git clone https://github.com/Neche-Stephen/task-flow-backend.git
+    cd task-flow-backend
     ```
 
-2. Configure the MySQL database:
+4. Configure the MySQL database:
     - Update the `application.properties` file with your MySQL credentials.
 
-3. Build and run the application:
+5. Build and run the application:
 
    **Using the Maven wrapper:**
    Run the following commands:
@@ -111,9 +118,8 @@ This setup will allow you to test the TaskFlow backend API endpoints either usin
 3. Register or log in to your account.
 4. Create, view, edit, or delete your tasks.
 
-## Usage
-
 ### Screenshots
+![Screenshot 2024-07-10 at 7 00 47 PM](https://github.com/Neche-Stephen/task-flow-backend/assets/61988607/69aa5725-8272-4885-a4fb-c67e538110d6)
 
 ### Features
 
