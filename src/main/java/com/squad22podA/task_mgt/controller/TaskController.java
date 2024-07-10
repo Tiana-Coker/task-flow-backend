@@ -53,12 +53,6 @@ public class TaskController {
     }
 
 
-    // view all task by status
-//    @GetMapping("/status/{status}")
-//    public List<Task> getTasksByStatus(@PathVariable Status status) {
-//        return taskService.getTasksByStatus(status);
-//    }
-
     //task status of a given user
     @GetMapping("/status/{status}/user/{userId}")
     public ResponseEntity<?> getTasksByStatusAndUserId(@PathVariable Status status, @PathVariable Long userId) {
