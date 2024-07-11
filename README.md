@@ -38,7 +38,7 @@ As a user, I want to be able to sign up for an account so that I can access the 
         7. View a list of completed tasks separately.
         8. Log out of my account.
 
-## Technologies-Used 
+## Technologies Used 
 
 - **Frontend:**
     - HTML
