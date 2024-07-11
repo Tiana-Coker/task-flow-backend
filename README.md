@@ -66,8 +66,8 @@ As a user, I want to be able to sign up for an account so that I can access the 
 **Or Clone the Frontend Repo (for a simple frontend setup):**
 1. Clone the frontend repository from here.
     ``` sh
-        git clone https://github.com/Tiana-Coker/week10-frontend.git
-        cd week10-frontend 
+        git clone https://github.com/Neche-Stephen/task-flow-frontend.git
+        cd task-flow-frontend
    ```
 
 2. Open the project in Visual Studio Code (VS Code). - VS Code (recommended for Live Server):
