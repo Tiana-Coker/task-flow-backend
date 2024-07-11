@@ -12,7 +12,6 @@ TaskFlow is a task management application designed to help individuals efficient
 5. [Usage](#usage)
 6. [API Documentation](#api-documentation)
 7. [Contributing](#contributing)
-8.
 
 ## Overview
 
