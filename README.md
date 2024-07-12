@@ -64,7 +64,7 @@ As a user, I want to be able to sign up for an account so that I can access the 
 2. Use Postman to send requests to the API endpoints in the Controllers and verify their responses.
 
 **Or Clone the Frontend Repo (for a simple frontend setup):**
-1. Clone the frontend repository from here.
+1. Clone the frontend repository from [here](https://github.com/Neche-Stephen/task-flow-frontend).
     ``` sh
         git clone https://github.com/Neche-Stephen/task-flow-frontend.git
         cd task-flow-frontend
