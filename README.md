@@ -1,4 +1,4 @@
-# TaskFlow Frontend
+# TaskFlow Backend
 
 TaskFlow is a task management application designed to help individuals efficiently organize their personal tasks and boost productivity. This repository contains the Backend implementation of TaskFlow, built using Java, Spring Boot and Spring Security. 
 
